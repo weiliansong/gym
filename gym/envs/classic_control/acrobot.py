@@ -195,7 +195,15 @@ class AcrobotEnv(core.Env):
         thetas = [s[0]-np.pi/2, s[0]+s[1]-np.pi/2]
         link_lengths = [self.LINK_LENGTH_1, self.LINK_LENGTH_2]
 
-        self.viewer.draw_line((-2.2, 1), (2.2, 1))
+        obj_x = np.random.uniform(low=-2, high=2)
+        obj_y = np.random.uniform(low=-2, high=2)
+        obj_loc = (obj_x, obj_y)
+
+        obj = self.viewer.draw_circle(.1)
+        obj.set_color(1, 0, 1)
+        objtransform = rendering.Transform(rotation=0, translation=obj_loc)
+        obj.add_attr(objtransform)
+
         for ((x,y),th,llen) in zip(xys, thetas, link_lengths):
             l,r,t,b = 0, llen, .1, -.1
             jtransform = rendering.Transform(rotation=th, translation=(x,y))
@@ -206,7 +214,7 @@ class AcrobotEnv(core.Env):
             circ.set_color(.8, .8, 0)
             circ.add_attr(jtransform)
 
-        return self.viewer.render(return_rgb_array = mode=='rgb_array')
+        return self.viewer.render(return_rgb_array = mode=='rgb_array'), obj_loc
 
     def close(self):
         if self.viewer:
